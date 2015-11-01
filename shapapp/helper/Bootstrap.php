@@ -4,6 +4,7 @@ namespace ShapApp\helper;
 
 use Base;
 use F3;
+use Shap;
 
 class Bootstrap
 {
@@ -76,5 +77,74 @@ ALERT;
         $html .= '</ul>';
 
         return $html;
+    }
+
+    /**
+     * Generate html list menu, use F3::$ALIASES and F3::$ALIAS
+     * @param  array $menu
+     * @return string html
+     */
+    public function nav($menu, $full = false)
+    {
+        $fw = Base::instance();
+        $menu || $menu = [];
+        $active = $fw['ALIAS'];
+        $baseUrl = $full?rtrim(Shap::url(),'/'):'';
+        isset($menu['items']) || $menu['items'] = [];
+        isset($menu['level']) || $menu['level'] = -1;
+        $menu['level']++;
+        $eol = "\n";
+
+        $str = sprintf('<ul class="%s">',
+            ($menu['level']>0?'dropdown-menu':$menu['class'])).$eol;
+        foreach ($menu['items'] as $key => $value) {
+            if (isset($value['show']) && !$value['show'])
+                continue;
+
+            isset($value['label']) || $value['label'] = $key;
+            $hasChild = isset($value['items']) && count($value['items'])>0;
+            $liAttr   = [
+                'class'=>[],
+                ];
+            $aAttr    = [
+                'href'=>'#'===$key[0]?'javascript:;':$baseUrl.Shap::path($key,
+                    isset($value['args'])?$value['args']:[]),
+                'class'=>[],
+                'data-toggle'=>[],
+                ];
+            if ($menu['level'] < 1 and $hasChild) {
+                array_push($liAttr['class'], 'dropdown');
+                $value['label'] .= ' <span class="caret"></span>';
+            }
+            $child = '';
+            if ($hasChild) {
+                $value['level']  = $menu['level'] + 1;
+                $child = $eol.$this->nav($value, $full).$eol;
+                array_push($aAttr['class'], 'dropdown-toggle');
+                array_push($aAttr['data-toggle'], 'dropdown');
+                $aAttr['role'] = 'button';
+                $aAttr['aria-expanded'] = 'false';
+            }
+
+            if ($active === $key || strpos($child, 'class="active"')!==false) {
+                array_push($liAttr['class'], 'active');
+                $value['label'] = $value['label'].' <span class="sr-only">(current)</span>';
+            }
+
+            $str .= '<li';
+            foreach ($liAttr as $key2 => $value2)
+                !$value2 || $str .= ' '.$key2.'="'.
+                    (is_array($value2)?implode(' ', $value2):$value2).'"';
+            $str .= '><a';
+            foreach ($aAttr as $key2 => $value2)
+                !$value2 || $str .= ' '.$key2.'="'.
+                    (is_array($value2)?implode(' ', $value2):$value2).'"';
+            $str .= '>'.$value['label'].'</a>';
+            $str .= $child;
+            $str .= '</li>'.$eol;
+        }
+        $str .= '</ul>';
+
+        return $str;
     }
 }

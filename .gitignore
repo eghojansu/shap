@@ -1,7 +1,9 @@
 app/data/*
+app/modules/shaptest/*
 runtime/*
 vendor/*
 *.sublime-workspace
+*.mwb.bak
 composer.lock
 !.htaccess
 !.gitkeep
