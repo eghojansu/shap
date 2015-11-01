@@ -4,7 +4,7 @@ class Shap
 {
     const
         PACKAGE = 'eghojansu/shap',
-        VERSION = '0.1.0';
+        VERSION = '0.1.1';
 
     public static $app;
     private static $baseUrl;
