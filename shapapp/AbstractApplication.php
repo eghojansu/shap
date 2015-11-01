@@ -66,8 +66,7 @@ abstract class AbstractApplication
             $fw->mset([
                 'CACHE'=>true,
                 ]);
-        foreach (Shap::find('ini', $DIR) as $file)
-            $fw->config($file);
+        array_map([$fw, 'config'], Shap::find('ini', $DIR, true));
         $this->helper = new Loader('ShapApp\\helper\\');
         $this->user = new User;
         $template = Template::instance();

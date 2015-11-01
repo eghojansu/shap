@@ -4,20 +4,17 @@ class Shap
 {
     const
         PACKAGE = 'eghojansu/shap',
-        VERSION = '0.1.4';
+        VERSION = '0.1.5';
 
     public static $app;
     private static $baseUrl;
 
     public static function find($ext, $dir, $recursive = false, $keep = true)
     {
-        $files = [];
-        foreach (glob($dir.'*.'.$ext) as $file) {
-            $files[] = $file;
-            $keep || unlink($file);
-        }
-        foreach ($recursive?glob($dir.'*', GLOB_ONLYDIR):[] as $dir)
-            $files = array_merge($files, self::find($ext, $dir));
+        $files = glob($dir.'*.'.$ext);
+        foreach ($recursive?glob($dir.'*', GLOB_ONLYDIR|GLOB_NOSORT):[] as $dir)
+            $files = array_merge($files, self::find($ext, $dir.'/', $recursive, $keep));
+        $keep || array_map('unlink', $files);
 
         return $files;
     }
