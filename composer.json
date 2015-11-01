@@ -1,7 +1,7 @@
 {
 	"name": "eghojansu/shap",
 	"description": "Bootstrap for new Light Simple PHP Web Project that require bcosca/fatfree",
-	"type": "library",
+	"type": "project",
 	"keywords": ["simple php", "php framework", "simple php framework", "shap", "shap php"],
 	"homepage": "http://eko.panturaweb.com/project/shap",
 	"license": "MIT",
