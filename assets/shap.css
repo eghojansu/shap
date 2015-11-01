@@ -1,0 +1,9 @@
+/*
+ * Shap style
+ * @author Eko Kurniawan <ekokurniawan@panturaweb.com>
+ */
+.shap-table .pagination {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+}

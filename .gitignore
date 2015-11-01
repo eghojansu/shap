@@ -1,0 +1,7 @@
+app/data/*
+runtime/*
+vendor/*
+*.sublime-*
+composer.lock
+!.htaccess
+!.gitkeep

@@ -1,0 +1,98 @@
+<h3 class="page-header">
+	Permissions
+</h3>
+
+<div class="shap-table">
+	<div class="row">
+		<div class="col-md-6">
+		</div>
+		<div class="col-md-6">
+			<check if="{{ Shap::$app->user->access->can('create permission') }}">
+				<form class="form-inline pull-right" action="{{ 'rbacPermissionAdd' | path }}" method="post">
+					<div class="form-group">
+						<label class="sr-only" for="permission">Permission</label>
+						<input type="text" name="permission" id="permission" class="form-control" placeholder="Permission">
+					</div>
+					<button type="submit" class="btn btn-primary">Save</button>
+					<button type="reset" class="btn btn-default">Close</button>
+				</form>
+			</check>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-condensed table-bordered">
+				<thead>
+					<tr>
+						<th class="w40"></th>
+						<th class="w40">No</th>
+						<th>Permission</th>
+					</tr>
+				</thead>
+				<tbody>
+					<repeat group="{{ @permissions.data }}" value="{{ @item }}">
+						<tr>
+							<td>
+								<form action="{{ 'rbacPermissionRemove' | path }}" method="post">
+									<input type="hidden" name="permission_id" value="{{ @item.permission_id }}">
+									<button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-remove"></i></button>
+								</form>
+								<button class="btn btn-sm btn-warning update-permission-trigger" style="margin-top: 5px"><i class="fa fa-pencil"></i></button>
+							</td>
+							<td>{{ @permissions.firstNumber++ }}</td>
+							<td>
+								<span>{{ @item.permission }}</span>
+								<form class="update-permission" action="{{ 'rbacPermissionUpdate' | path }}" method="post" style="display:none">
+									<input type="hidden" name="permission_id" value="{{ @item.permission_id }}">
+									<div class="input-group input-group-sm">
+										<input type="text" name="permission" class="form-control" value="{{ @item.permission }}">
+										<span class="input-group-btn">
+									        <button class="btn btn-default" type="submit"><i class="fa fa-save"></i></button>
+									    </span>
+									</div>
+								</form>
+							</td>
+						</tr>
+					</repeat>
+					<check if="{{ empty(@permissions.data) }}">
+						<tr>
+							<td colspan="3">No Permission</td>
+						</tr>
+					</check>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<select class="form-control" style="width: 70px;display:inline">
+				<repeat group="{{ @paging.length }}" value="{{ @len }}">
+					<option value="{{ @len }}"{{ @len===@data.limit?' selected':'' }}>{{ @len }}</option>
+				</repeat>
+			</select>
+			<span class="data-info">Total records: {{ @permissions.recordCount }}</span>
+		</div>
+		<div class="col-md-6">
+			{{ Shap::$app->helper->bootstrap->paging(@permissions) }}
+		</div>
+	</div>
+</div>
+
+<script>
+$('form').on('submit', function(event){
+	event.preventDefault();
+	var $this = $(this);
+	$.post($this.prop('action'), $this.serialize(), function(result){
+		if (result.success)
+			window.location.reload();
+		else
+			bootbox.alert(result.message);
+	}).error(function(){
+		bootbox.alert('Request error');
+	});
+});
+$('.update-permission-trigger').on('click', function(){
+	$(this).parents('tr').find('.update-permission').parent().children().slideToggle();
+});
+</script>

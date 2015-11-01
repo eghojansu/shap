@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Eko Kurniawan">
+  <link rel="stylesheet" href="{{ 'assets/bootstrap.css' | path }}">
+  <link rel="stylesheet" href="{{ 'assets/font-awesome.css' | path }}">
+  <link rel="stylesheet" href="{{ 'assets/shap.css' | path }}">
+  <style>
+  body {
+    padding-bottom: 60px;
+    padding-top: 60px;
+  }
+  .footer {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .page-header {
+    margin-top: 10px;
+  }
+  .btn-sm {
+    padding-top: 1px;
+    padding-bottom: 1px;
+  }
+  .w40 {
+    width: 40px;
+  }
+  .user-roles-add {
+    max-width: 200px;
+    margin-top: 5px;
+  }
+  .user-roles span {
+    padding: 3px 6px;
+    border-radius: 8px;
+    border: solid 1px #ddd;
+    background: #eee;
+    margin-left: 3px;
+  }
+  .user-roles span a {
+    color: #777;
+    text-decoration: none;
+  }
+  .user-roles span:first-child {
+    margin-left: 0;
+  }
+  </style>
+  <script src="{{ 'assets/jquery2.js' | path }}"></script>
+  <script src="{{ 'assets/bootstrap.js' | path }}"></script>
+  <script src="{{ 'assets/bootbox.js' | path }}"></script>
+  <script src="{{ 'assets/script.js' | path }}"></script>
+	<title>Shap RBAC Management</title>
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" title="RBAC">Shap RBAC</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <repeat group="{{ @menus }}" key="{{ @route }}" value="{{ @menu }}">
+              <li{{ @menu.active?' class="active"':'' }}><a href="{{ @route | path }}">{{ @menu.label }}</a></li>
+            </repeat>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+      {{ @CONTENT | raw }}
+    </div>
+
+    <footer class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container footer">
+        <span class="pull-right">Eko Kurniawan &copy; 2015</span>
+        <strong>{{ Shap::PACKAGE }}</strong> version : {{ Shap::VERSION }}
+      </div>
+    </footer>
+</body>
+</html>

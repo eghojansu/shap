@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+	<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="Eko Kurniawan">
+  <link rel="stylesheet" href="{{ 'assets/bootstrap.css' | path }}">
+  <link rel="stylesheet" href="{{ 'assets/font-awesome.css' | path }}">
+  <style>
+  .login-form {
+  	max-width: 300px;
+  	margin: 150px auto 50px;
+  	border: solid 1px #ccc;
+  	padding: 10px;
+  	border-radius: 8px;
+  }
+  .login-form .form-title {
+  	margin-bottom: 25px;
+  }
+  .login-form .input-group {
+  	margin-bottom: 15px;
+  }
+  </style>
+  <script src="{{ 'assets/jquery2.js' | path }}"></script>
+  <script src="{{ 'assets/bootstrap.js' | path }}"></script>
+	<title>Login - Shap RBAC Management</title>
+</head>
+<body>
+    <form class="login-form clearfix" method="post">
+		<h4 class="form-title">Login to your account</h4>
+		{{ Shap::$app->helper->bootstrap->alert('danger', $error) | raw }}
+		<div class="input-group">
+			<span class="input-group-addon">
+				<i class="fa fa-user"></i>
+			</span>
+			<input type="text" name="username" class="form-control" placeholder="username" value="{{ @POST.username }}" required autofocus>
+		</div> 
+		<div class="input-group">
+			<span class="input-group-addon">
+				<i class="fa fa-lock"></i>
+			</span>
+			<input type="password" name="password" class="form-control" placeholder="password" required>
+		</div> 
+		<button type="submit" class="btn btn-primary pull-right">
+		Login <i class="fa fa-arrow-circle-right"></i>
+		</button>
+	</form>
+</body>
+</html>

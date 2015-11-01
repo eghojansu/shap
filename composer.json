@@ -1,0 +1,39 @@
+{
+	"name": "eghojansu/shap",
+	"description": "Bootstrap for new Light Simple PHP Web Project that require bcosca/fatfree",
+	"type": "library",
+	"keywords": ["simple php", "php framework", "simple php framework", "shap", "shap php"],
+	"homepage": "http://eko.panturaweb.com/project/shap",
+	"license": "MIT",
+	"authors": [
+		{
+            "name": "Eko Kurniawan",
+            "email": "ekokurniawan@panturaweb.com",
+            "homepage": "http://eko.panturaweb.com",
+            "role": "Developer"
+        }
+	],
+	"support": {
+        "email": "ekokurniawan@panturaweb.com"
+	},
+	"require": {
+		"bcosca/fatfree": "3.5.0"
+	},
+	"require-dev": {
+		"codeception/codeception": "*",
+		"codeception/specify": "*",
+		"codeception/verify": "*"
+	},
+	"autoload": {
+		"psr-4": {
+			"ShapApp\\": "shapapp/"
+		},
+		"files": ["shapapp/Shap.php"]
+	},
+	"scripts": {
+		"post-install-cmd": [
+			"php -r \"chmod('runtime', 0777);\"",
+			"php -r \"chmod('app/data', 0777);\""
+		]
+	}
+}

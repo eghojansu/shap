@@ -1,0 +1,192 @@
+<h3 class="page-header">
+	User Roles
+</h3>
+
+<div class="shap-table">
+	<div class="row">
+		<div class="col-md-6">
+		</div>
+		<div class="col-md-6">
+			<check if="{{ Shap::$app->user->access->can('create user role') }}">
+				<button class="btn btn-primary pull-right" id="user-role-new">New</button>
+				<form class="form-inline form-user-role pull-right" action="{{ 'rbacUserRoleAdd', ['user'=>'{user}','role'=>'{role}'] | path }}" method="post" style="display:none">
+					<div class="form-group">
+						<label class="sr-only" for="user_id">User</label>
+						<select id="list-user" class="form-control">
+							<option value="">-- Users</option>
+							<repeat group="{{ @userList }}" value="{{ @item }}">
+								<option value="{{ @item.id }}">{{ @item.username }}</option>
+							</repeat>
+						</select>
+						<input type="text" name="user_id" id="user_id" class="form-control" placeholder="User ID">
+					</div>
+					<div class="form-group">
+						<label class="sr-only" for="role_id">Role</label>
+						<select id="list-role" name="role_id" class="form-control">
+							<option value="">-- Roles</option>
+							<repeat group="{{ @roles }}" value="{{ @item }}">
+								<option value="{{ @item.role_id }}">{{ @item.role }}</option>
+							</repeat>
+						</select>
+					</div>
+					<button type="submit" class="btn btn-primary">Save</button>
+					<button type="reset" class="btn btn-default">Close</button>
+				</form>
+			</check>
+		</div>
+	</div>
+	<hr>
+	<div class="row">
+		<div class="col-md-12">
+			<table class="table table-condensed table-bordered">
+				<thead>
+					<tr>
+						<th class="w40"></th>
+						<th>User</th>
+						<th>Roles</th>
+					</tr>
+				</thead>
+				<tbody>
+					<repeat group="{{ @usersRoles }}" key="{{ @user_id }}" value="{{ @roles }}">
+						<tr>
+							<td>
+								<check if="{{ @user_id!==@SESSION.id }}">
+									<a href="{{ 'rbacUserRemove', ['user'=>@user_id] | path }}" class="user-remove btn btn-danger btn-sm"><i class="fa fa-remove"></i></a>
+								</check>
+							</td>
+							<td>
+								{{ @user_id }}<br>
+								<a href="{{ 'rbacUserDetail', ['user'=>@user_id] | path }}" class="user-detail btn btn-info btn-sm">Detail</a>
+							</td>
+							<td>
+								<div class="user-roles">
+									<repeat group="{{ @roles }}" key="{{ @role_id }}" value="{{ @role }}">
+										<span data-id="{{ @role_id }}" data-role="{{ @role }}">
+											{{ @role }}
+											<a href="{{ 'rbacUserRoleRemove', ['user'=>@user_id,'role'=>@role_id] | path }}">&times;</a>
+										</span>
+									</repeat>
+								</div>
+								<div class="user-roles-add">
+									<form class="form-inline form-user-role" action="{{ 'rbacUserRoleAdd', ['user'=>@user_id,'role'=>'{role}'] | path }}" method="post" data-roles="{{ json_encode(array_keys(@roles)) }}" data-user="{{ @user_id }}">
+										<div class="input-group input-group-sm">
+											<span class="input-group-btn">
+										        <button class="btn btn-default" type="submit" disabled><i class="fa fa-plus"></i></button>
+										    </span>
+										</div>
+									</form>
+								</div>
+							</td>
+						</tr>
+					</repeat>
+					<check if="{{ empty(@usersRoles) }}">
+						<tr>
+							<td colspan="3">No user</td>
+						</tr>
+					</check>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script>
+$('#user-role-new').on('click', function(){
+	$(this).hide().next('form').slideDown();
+});
+$('.form-user-role button:reset').on('click', function(){
+	$(this).parents('form').slideUp().prev('#user-role-new').show();
+});
+$('.user-roles-add .input-group').each(function(){
+	var listRole = $('#list-role').clone().removeAttr('id'),
+		roles = new RegExp('('+$(this).parents('form').data('roles').join('|')+')');
+	listRole.find('option').filter(function(){
+		return roles.test($(this).prop('value'));
+	}).remove();
+	$(this).prepend(listRole);
+});
+$('.user-roles-add .input-group').delegate('select', 'change', function(){
+	$(this).next('span').find('button').prop('disabled', $(this).val().length===0);
+});
+$('.user-roles').delegate('span a', 'click', function(event){
+	event.preventDefault();
+	var $span = $(this).parent();
+	$.post($(this).prop('href'), null, function(result){
+		if (result.deleted) {
+			$span.parent().next('.user-roles-add').find('select').append(
+				$('<option/>').prop('value', $span.data('id')).text($span.data('role'))
+			);
+			$span.fadeOut().remove();
+		}
+		else
+			bootbox.alert('User roles cannot be deleted');
+	}).error(function(){
+		bootbox.alert('Request error');
+	});
+});
+$('.form-user-role').on('submit', function(event){
+	event.preventDefault();
+	var $this = $(this);
+	var $roles = $(this).find('select[name=role_id]');
+	var $user = $(this).find('input[name=user_id]');
+	var userID = $user.val() || $this.data('user');
+	var roleID = $roles.val();
+	var role = $roles.find('option:selected').text();
+	var action = decodeURIComponent($(this).prop('action'))
+		.replace('{user}', userID)
+		.replace('{role}', roleID);
+	$.post(action, null, function(result){
+		if (result.saved) {
+			var $roleList = $this.parents('.user-roles-add').prev('.user-roles');
+			if ($roleList.length > 0) {
+				$roles.find('option:selected').remove();
+				var $span = $('<span/>').css('display', 'none')
+					.data('id',roleID)
+					.data('role',role)
+					.text(role+' ');
+				var $a = $('<a/>').prop('href', "{{ 'rbacUserRoleRemove', ['user'=>'{user}','role'=>'{role}'] | path }}".replace('{user}', userID).replace('{role}', roleID)).html('&times;');
+				$roleList.append(
+					$span.append(
+						$a
+					)
+				);
+				$roleList.find('span:last-child').fadeIn();
+				$this[0].reset();
+				$this.find('button').prop('disabled',true);
+			} else
+				window.location.reload();
+		}
+		else
+			bootbox.alert('User roles cannot be saved');
+	}).error(function(){
+		bootbox.alert('Request error');
+	});
+});
+$('.user-remove').on('click', function(event){
+	event.preventDefault();
+	var $tr = $(this).parents('tr');
+	$.post($(this).prop('href'), null, function(result){
+		if (result.deleted)
+			$tr.fadeOut().remove();
+		else
+			bootbox.alert('User cannot be deleted');
+	}).error(function(){
+		bootbox.alert('Request error');
+	});
+});
+$('.user-detail').on('click', function(event){
+	event.preventDefault();
+	var $this = $(this);
+	var $td = $(this).parents('td');
+	$.post($(this).prop('href'), null, function(result){
+		var detail = new Array;
+		$.each(result.user, function(i,v){
+			detail.push([i,v].join(' = '));
+		});
+		$this.fadeOut().remove();
+		$td.append(detail.join('<br>'));
+	}).error(function(){
+		bootbox.alert('Request error');
+	});
+});
+</script>

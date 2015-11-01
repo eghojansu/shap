@@ -1,0 +1,172 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  margin-bottom: 70px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+#home {
+  background-image: url(img/bg.jpg);
+  background-size: cover;
+}
+
+#app-name {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#app-desc {
+  font-size: 18px;
+}
+
+#home .content {
+}
+
+#home .pengumuman {
+  text-align: right;
+  min-height: 300px;
+  background-color: rgba(255, 255, 255, .1);
+  padding: 10px;
+  border-radius: 8px;
+}
+#home .pengumuman > .pengumuman-content {
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, .4);
+  padding: 10px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+#home .login-form {
+  background-color: rgba(255, 255, 255, .1);
+  padding: 10px;
+  border-radius: 8px;
+}
+#home .login-form .form-title {
+  margin-bottom: 30px;
+}
+#home .login-form .input-group {
+  margin-bottom: 10px;
+}
+#home .login-form .forget-password {
+  background-color: rgba(255, 255, 255, .1);
+  padding: 5px;
+  border-radius: 8px;
+}
+
+body > .container {
+  padding: 60px 15px 0;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+
+.footer {
+  background-color: rgba(44, 218, 245, 1);
+}
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+code {
+  font-size: 80%;
+}
+
+.page-header {
+  margin-top: 10px;
+}
+
+/* crud */
+table.firstNum td:first-child {
+  width: 50px;
+}
+.paging .pagination {
+  margin-top: 0;
+  margin-bottom: 0;
+  float: right;
+}
+.detail-data td:first-child {
+  width: 180px;
+}
+.detail-data .table {
+  margin-bottom: 0;
+}
+.form-inline select {
+  max-width: 170px;
+}
+.laporan thead th,
+.laporan thead td {
+  text-align: center;
+}
+.laporan thead tr td {
+  font-size: smaller;
+  padding: 1px;
+}
+
+.max100 {
+  max-width: 100px;
+}
+.max200 {
+  max-width: 200px;
+}
+
+/* navbar */
+.navbar-default .navbar-brand {
+    color: rgba(119, 119, 119, 1);
+}
+.navbar-default {
+    font-size: 14px;
+    background-color: rgba(44, 218, 245, 1);
+    border-width: 1px;
+    border-radius: 4px;
+}
+.navbar-default .navbar-nav>li>a {
+    color: rgba(119, 119, 119, 1);
+    background-color: rgba(248, 248, 248, 0);
+}
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus {
+    color: rgba(51, 51, 51, 1);
+    background-color: rgba(248, 248, 248, 0);
+}
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:hover,
+.navbar-default .navbar-nav>.active>a:focus {
+    color: rgba(242, 233, 233, 1);
+    background-color: rgba(24, 185, 194, 1);
+}
+.navbar-default .navbar-toggle {
+    border-color: #18b9c2;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #18b9c2;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #18b9c2;
+}
+.navbar-default .navbar-toggle:hover .icon-bar,
+.navbar-default .navbar-toggle:focus .icon-bar {
+    background-color: #2cdaf5;
+}
+
+#laporan-list {}
+#laporan-list h4 a {
+  display: block;
+}
+#laporan-list h4 a:active,
+#laporan-list h4 a:focus,
+#laporan-list h4 a:hover {
+  text-decoration: none;
+}
