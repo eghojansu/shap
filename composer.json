@@ -17,7 +17,8 @@
         "email": "ekokurniawan@panturaweb.com"
 	},
 	"require": {
-		"bcosca/fatfree": "3.5.0"
+		"bcosca/fatfree": "3.5.0",
+		"phpoffice/phpexcel": "1.8.1"
 	},
 	"require-dev": {
 		"codeception/codeception": "*",
@@ -32,8 +33,9 @@
 	},
 	"scripts": {
 		"post-install-cmd": [
-			"php -r \"chmod('runtime', 0777);\"",
-			"php -r \"chmod('app/data', 0777);\""
+			"chmod 0777 runtime app/data",
+			"rm -R vendor/bcosca/fatfree/ui vendor/phpoffice/phpexcel/Examples vendor/phpoffice/phpexcel/unitTests",
+			"mv index.php.sample index.php"
 		]
 	}
 }
