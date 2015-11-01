@@ -49,10 +49,6 @@ abstract class AbstractApplication
                     'user'=>'root',
                     'pass'=>null
                     ],
-                'rbac'=>[
-                    'type'=>'sqlite',
-                    'file'=>$DIR.'data/rbac.sq3',
-                    ],
                 ],
             ]);
         if ($DEV) {
@@ -60,7 +56,6 @@ abstract class AbstractApplication
                 'CACHE'=>false,
                 'DEBUG'=>3,
                 ]);
-            $fw->config(__DIR__.'/rbac/routes.ini');
         }
         else
             $fw->mset([
