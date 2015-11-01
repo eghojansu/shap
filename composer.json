@@ -30,7 +30,7 @@
 		"post-install-cmd": [
 			"chmod 0777 runtime app/data",
 			"rm -R vendor/bcosca/fatfree/ui vendor/phpoffice/phpexcel/Examples vendor/phpoffice/phpexcel/unitTests",
-			"mv index.php.sample index.php"
+			"php -r \"rename('shap.sublime-project', basename(__DIR__).'.sublime-project');\""
 		]
 	}
 }
