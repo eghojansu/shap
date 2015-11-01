@@ -20,6 +20,11 @@
 		"bcosca/fatfree": "3.5.0",
 		"phpoffice/phpexcel": "1.8.1"
 	},
+	"require-dev": {
+		"codeception/codeception": "*",
+		"codeception/specify": "*",
+		"codeception/verify": "*"
+	},
 	"autoload": {
 		"psr-4": {
 			"ShapApp\\": "shapapp/"
