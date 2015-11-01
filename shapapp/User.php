@@ -5,7 +5,6 @@ namespace ShapApp;
 use Base;
 use Bcrypt;
 use F3;
-use ShapApp\rbac\Access;
 
 class User
 {
@@ -16,11 +15,6 @@ class User
      */
     public $map;
     public $prop;
-    /**
-     * User access
-     * @var Shap\Access object
-     */
-    public $access;
     public $isLogged = false;
 
     public function update()
@@ -115,6 +109,5 @@ class User
             $this->map = new $this->prop['model'];
         (empty($this->isLogged) || empty($this->map)) ||
             $this->map->load($this->prop['id'].'='.$this->id);
-        $this->access = new Access($this->id);
     }
 }
