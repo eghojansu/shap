@@ -47,6 +47,7 @@ class SQLTable extends Mapper
         }
 
         parent::__construct(Registry::get($connID), $this->tableName);
+        $this->init();
     }
 
     public function page($fields='*',$page=1,$size=10,$filter=null,array $options=[],$ttl=0)
@@ -217,5 +218,10 @@ class SQLTable extends Mapper
         $this->load($filter, ['limit'=>1], $ttl);
 
         return $this;
+    }
+
+    public function init()
+    {
+        // when initialize model
     }
 }
