@@ -1,7 +1,7 @@
 app/data/*
 runtime/*
 vendor/*
-*.sublime-*
+*.sublime-workspace
 composer.lock
 !.htaccess
 !.gitkeep
