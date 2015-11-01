@@ -36,6 +36,12 @@ $(document).ready(function(){
 			    ['help', ['help']]
 			  ]
 		});
+	if (typeof $.fn.autoNumeric !== 'undefined') {
+		$('.autonumeric').autoNumeric('init', {
+			'aSep':'.',
+			'aDec':','
+		});
+	}
 	$('.use-datepicker').each(function(){
 		$(this).prop('placeholder','format TAHUN-BULAN-TANGGAL, contoh: 2015-10-10').datepicker({format:'yyyy-mm-dd'});
 	});
