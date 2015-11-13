@@ -11,9 +11,12 @@ class Shap
 
     public static function find($ext, $dir, $recursive = false, $keep = true)
     {
-        $files = glob($dir.'*.'.$ext);
-        foreach ($recursive?glob($dir.'*', GLOB_ONLYDIR|GLOB_NOSORT):[] as $dir)
-            $files = array_merge($files, self::find($ext, $dir.'/', $recursive, $keep));
+        $files = [];
+        $ext = '.'.$ext;
+        foreach(new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir)) as $file)
+            strrchr($file, '.')!==$ext || $files[] = (string) $file;
+
         $keep || array_map('unlink', $files);
 
         return $files;
@@ -22,9 +25,16 @@ class Shap
     public static function removeDir($dir)
     {
         $removed = 0;
-        foreach (glob($dir.'*') as $path)
-            $removed += is_dir($path)?self::removeDir($path):(int) unlink($path);
-        $removed += (int) unlink($dir);
+        foreach(new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($dir),
+            RecursiveIteratorIterator::CHILD_FIRST) as $file)
+            if (false===in_array($file->getBasename(), ['.', '..'])) {
+                if ($file->isDir())
+                    rmdir($file->getPathName());
+                else if ($file->isFile() || $file->isLink() === true)
+                    $removed += (int) unlink($file->getPathname());
+            }
+        rmdir($dir);
 
         return $removed;
     }
@@ -88,5 +98,14 @@ class Shap
     public static function className($class)
     {
         return F3::snakecase(lcfirst(substr($class, strrpos($class, '\\')+1)));
+    }
+
+    public static function prependKey($prefix, array $array)
+    {
+        $result = [];
+        foreach ($array as $key => $value)
+            $result[$prefix.$key] = $value;
+
+        return $result;
     }
 }

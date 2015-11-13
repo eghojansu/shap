@@ -5,6 +5,7 @@ namespace ShapApp;
 use Base;
 use Template;
 use Shap;
+use InvalidArgumentException;
 
 abstract class AbstractApplication
 {
@@ -23,7 +24,10 @@ abstract class AbstractApplication
             $DIR, // namespaced with dir name
             $DIR.'modules/', // namespaced with module dir name
             ]));
+
         $fw->mset([
+            'LANGUAGE'=>'id',
+            'LOCALES'=>$DIR.'dict/',
             'TEMP'=>'runtime/',
             'TZ'=>'Asia/Jakarta',
             'UI'=>$DIR.'view/',
@@ -33,12 +37,15 @@ abstract class AbstractApplication
                 'length'=>[10,20,30,50,100],
                 ],
             'user'=>[
+                'class'=>'ShapApp\\User',
                 'model'=>null, // must be instance of Shap table (eg. SQLTable)
                 'password'=>'password',
                 'username'=>'username',
+                'access'=>'access',
                 'id'=>'id_user',
                 'info'=>[],
                 'update'=>[],
+                'homepage'=>null,
                 ],
             'database'=>[
                 'default'=>[
@@ -63,7 +70,9 @@ abstract class AbstractApplication
                 ]);
         array_map([$fw, 'config'], Shap::find('ini', $DIR, true));
         $this->helper = new Loader('ShapApp\\helper\\');
-        $this->user = new User;
+        $this->user = new $fw['user.class'];
+        if (!($this->user instanceof User))
+            throw new InvalidArgumentException('User class must be instance of ShapApp\\User');
         $template = Template::instance();
         $template->filter('path', 'Shap::path');
         $template->filter('url', 'Shap::url');
