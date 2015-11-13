@@ -38,7 +38,12 @@ abstract class Controller
      * Home route
      * @var string
      */
-    protected $home = '@home';
+    protected $homepage = '@home';
+    /**
+     * Logout route
+     * @var string
+     */
+    protected $logout = '@logout';
 
     protected function ajaxOnly()
     {
@@ -94,7 +99,7 @@ abstract class Controller
 
     protected function goHome()
     {
-        F3::reroute($this->home);
+        F3::reroute($this->homepage);
     }
 
     protected function refresh()
@@ -105,6 +110,13 @@ abstract class Controller
     public function afterroute()
     {
         empty($this->layout) || $this->render($this->layout);
+    }
+
+    protected function needLogin()
+    {
+        $this->user->isLogged || F3::reroute($this->logout);
+
+        return true;
     }
 
     public function __construct(Base $fw)

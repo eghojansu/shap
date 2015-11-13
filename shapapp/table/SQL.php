@@ -1,6 +1,6 @@
 <?php
 
-namespace ShapApp;
+namespace ShapApp\table;
 
 use Base;
 use DB\SQL;
@@ -8,26 +8,34 @@ use DB\SQL\Mapper;
 use F3;
 use Registry;
 use Shap;
+use ShapApp\Validator;
 use InvalidArgumentException;
 
-class SQLTable extends Mapper
+class SQL extends Mapper
 {
     const E_Connection = 'Error in connection setting for: %s';
 
     protected $tableName;
     protected $connection = 'default';
     protected $pkeys = [];
+    protected $rules = [];
+    protected $rule_messages = [];
+    protected $errors = [];
 
     public function __construct()
     {
         $this->tableName || $this->tableName = Shap::className(get_called_class());
-        $connID = 'database.'.$this->connection;
+        $connID = 'CONNECTION.'.$this->connection;
         if (!Registry::exists($connID)) {
             $fw = Base::instance();
             $config = ($fw[$connID]?:[])+[
                 'type'=>null,
+                'file'=>null,
+                'name'=>null,
+                'host'=>null,
                 'user'=>null,
                 'pass'=>null,
+                'port'=>3306,
                 ];
             $dsn = $config['type'].':';
             switch ($config['type']) {
@@ -47,6 +55,9 @@ class SQLTable extends Mapper
         }
 
         parent::__construct(Registry::get($connID), $this->tableName);
+        if (empty($this->pkeys))
+            foreach ($this->fields as $field => $schema)
+                false===$schema['pkey'] || $this->pkeys[] = $field;
         $this->init();
     }
 
@@ -179,10 +190,6 @@ class SQLTable extends Mapper
      */
     public function loadByPK($id,array $filter = [],$ttl=0)
     {
-        if (empty($this->pkeys))
-            foreach ($this->fields as $field => $schema)
-                false===$schema['pkey'] || $this->pkeys[] = $field;
-
         if (is_array($id)) {
             foreach ($id as $key=>$value)
                 if (!in_array($key, $this->pkeys))
@@ -220,8 +227,81 @@ class SQLTable extends Mapper
         return $this;
     }
 
-    public function init()
+    protected function init()
     {
-        // when initialize model
+        $this->beforesave(function($self,$pkeys){
+            return $self->validate()->success();
+        });
+    }
+
+    public function validate()
+    {
+        $values = $this->cast();
+        $validator = new Validator($values,$this->pkeysValue(),$this->rules,$this->rule_messages);
+        if ($validator->success)
+            $this->copyfrom($values);
+        else
+            $this->errors = $validator->result();
+
+        return $this;
+    }
+
+    public function addError($error, $field = null)
+    {
+        if ($field) {
+            isset($this->errors[$field]) || $this->errors[$field] = [];
+            $this->errors[$field][] = $error;
+        }
+        else
+            $this->errors[] = $error;
+    }
+
+    public function errorList()
+    {
+        $list = '';
+        foreach ($this->errors as $key => $value)
+            if (is_array($value))
+                $list .= '<li>'.implode('</li><li>', $value).'</li>';
+            else
+                $list .= '<li>'.$value.'</li>';
+
+        return $list?'<ul>'.$list.'</ul>':$list;
+    }
+
+    public function errors($field = null)
+    {
+        return $field?
+            (isset($this->errors[$field])?$this->errors[$field]:null):
+            $this->errors;
+    }
+
+    public function hasError()
+    {
+        return count($this->errors)>0;
+    }
+
+    public function success()
+    {
+        return !$this->hasError();
+    }
+
+    public function conn($id = 'default')
+    {
+        return Registry::get('CONNECTION.'.$id);
+    }
+
+    public function pkeys()
+    {
+        return $this->pkeys;
+    }
+
+    public function pkeysValue()
+    {
+        $pkeys = [];
+        foreach ($this->pkeys as $key)
+            $this->pkeys[$key] = $this->get($key);
+        count($pkeys)>1 || $pkeys = reset($pkeys);
+
+        return $pkeys;
     }
 }

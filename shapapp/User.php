@@ -15,7 +15,6 @@ class User
      */
     public $map;
     public $prop;
-    public $isLogged = false;
 
     public function update()
     {
@@ -32,11 +31,12 @@ class User
             unset($fw['error']);
 
         foreach ($this->prop['update'] as $field => $post)
-            $this->map->set($field, $fw['POST.'.$post]);
+            $field===$this->prop['password'] || $this->map->set($field, $fw['POST.'.$post]);
         if (isset($this->prop['update'][$this->prop['password']]))
             !$fw['POST.'.$this->prop['update'][$this->prop['password']]] ||
                 $this->map->set($this->prop['password'],
                     $bcrypt->hash($fw['POST.'.$this->prop['update'][$this->prop['password']]]));
+
         if ($saved = $this->map->save()) {
             $fw['SESSION.info'] = 'Data sudah diupdate!';
             $this->setSession(
@@ -90,6 +90,11 @@ class User
         return true;
     }
 
+    protected function goHome()
+    {
+        F3::reroute($this->prop['homepage']);
+    }
+
     public function info()
     {
         $info = [];
@@ -97,6 +102,12 @@ class User
             $info[] = $fw->get('SESSION.'.$info);
 
         return $info;
+    }
+
+    protected function access($access)
+    {
+        ($this->needLogin() && $access === $this->user->map->get(
+            $this->prop['access'])) || F3::error(405);
     }
 
     public function __construct()
